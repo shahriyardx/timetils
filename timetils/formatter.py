@@ -1,169 +1,187 @@
 import datetime
 from timetils.utils import gets
+from timetils.classes import BetterDelta, BetterDate, BetterTime, BetterDatetime
+
+__version__ = "1.1.0"
+__author__ = "shahriyardx"
+
 
 class Formatter:
-	def __init__(self):
-		pass
+    def __init__(self):
+        self.__version__ = __version__
+        self.__author__ = __author__
 
-	def natural_delta(self, delta:datetime.timedelta, as_dict=False):
-		"""
-		Convert a timedelta object to string.
+    def __repr__(self):
+        return "<class timetils.Formatter>"
 
-		Parameters
-		- delta			A time delta object
-		- as_dict=False	Whether it should return a dictionary or a string. 
+    def __str__(self):
+        return "<class timetils.Formatter>"
 
-		return			String or dictionary according to as_dict kwarg
-		"""
-		output = ""
-		days = delta.days
-		seconds = delta.seconds
+    def natural_delta(self, delta: datetime.timedelta, as_string=True):
+        """
+        Convert a timedelta object to string.
 
-		year = 0
-		month = 0
-		day = 0
-		hour = 0
-		minute = 0
-		second = 0
+        Parameters
+        - delta			A time delta object
+        - as_dict=False	Whether it should return a dictionary or a string.
 
-		if days == 0 and seconds == 0:
-			if as_dict:
-				return {'years': year, 'months': month, 'days' : day, 'hours': hour, 'minutes': minute, 'seconds': second}
-			output = "Just now"
-			return output
+        return			String or dictionary according to as_dict kwarg
+        """
 
-		year, days = gets.get_year(days)
-		month, day = gets.get_month(days)
-		hour, seconds = gets.get_hour(seconds)
-		minute, second = gets.get_minutes(seconds)
+        output = ""
+        days = delta.days
+        seconds = delta.seconds
 
-		if as_dict:
-			return {'years': year, 'months': month, 'days' : day, 'hours': hour, 'minutes': minute, 'seconds': second}
-		output = f"{f'{year} years ' if year > 0 else ''}{f'{month} months ' if month > 0 else ''}{f'{day} days ' if day > 0 else ''}{f'{hour} hours ' if hour > 0 else ''}{f'{minute} minutes ' if minute > 0 else ''}{f'{second} seconds' if second > 0 else ''}"
-		
-		output_list = [item for item in output.split(" ") if not item == ""]
+        year = 0
+        month = 0
+        day = 0
+        hour = 0
+        minute = 0
+        second = 0
 
-		if len(output_list) > 2:
+        year, days = gets.get_year(days)
+        month, day = gets.get_month(days)
+        hour, seconds = gets.get_hour(seconds)
+        minute, second = gets.get_minutes(seconds)
 
-			first_part = output_list[:len(output_list)-2]
-			last_part = [item for item in output_list if item not in first_part]
+        time = BetterDelta(year, month, day, hour, minute, second)
 
-			part1 = " ".join(first_part)
-			part2 = " ".join(last_part)
+        if days == 0 and seconds == 0:
+            if not as_string:
+                return time
+            output = "Just now"
+            return output
 
-			output = part1 + " and " + part2
-		
-		return output
+        if not as_string:
+            return time
 
-	def natural_date(self, date:datetime.date, as_dict=False):
-		"""
-		datetime object to a human readable time
+        output = time.string
+        return output
 
-		Parameters
-		- date				A datetime.date object
-		- as_dict=False		Whether it should return a dictionary or a string. Default False
+    def natural_date(self, date: datetime.date, as_string=True):
+        """
+        datetime object to a human readable time
 
-		return				string or dictionary according to as_dict kwarg
-		"""
-		if not isinstance(date, datetime.date):
-			raise ValueError("date must be a object of 'datetime.date'")
+        Parameters
+        - date				A datetime.date object
+        - as_dict=False		Whether it should return a dictionary or a string. Default False
 
-		date = datetime.datetime.strftime(date, "%d")
+        return				string or dictionary according to as_dict kwarg
+        """
+        if not isinstance(date, datetime.date):
+            raise ValueError("date must be a object of 'datetime.date'")
 
-		day_short = datetime.datetime.strftime(date, "%a")
-		day_full = datetime.datetime.strftime(date, "%A")
+        dates = datetime.datetime.strftime(date, "%d")
 
-		month_short = datetime.datetime.strftime(date, "%b")
-		month_full = datetime.datetime.strftime(date, "%B")
+        day_short = datetime.datetime.strftime(date, "%a")
+        day_full = datetime.datetime.strftime(date, "%A")
 
-		year_short = datetime.datetime.strftime(date, "%y")
-		year_full = datetime.datetime.strftime(date, "%Y")
+        month_short = datetime.datetime.strftime(date, "%b")
+        month_full = datetime.datetime.strftime(date, "%B")
 
-		if as_dict:
-			return {'date': date, 'day_short': day_short, 'day_full': day_full, 'year_short': year_short, 'year_full': year_full, 'month_short': month_short, 'month_full': month_full, 'date': date}
+        year_short = datetime.datetime.strftime(date, "%y")
+        year_full = datetime.datetime.strftime(date, "%Y")
 
+        date_part = datetime.datetime.strftime(date, "%A, %d %b %Y")
 
-		date_part = datetime.datetime.strftime(date, "%A, %d %b %Y")
+        better_date = BetterDate(dates, day_short, day_full, month_short, month_full, year_short, year_full, date_part)
 
-		return date_part
+        if as_string:
+            return better_date.string
 
-	def natural_time(self, time:datetime.time, as_dict=False, format=12):
-		"""
-		datetime object to a human readable time
+        return better_date
 
-		Parameters
-		- time				a datetime.time object
-		- as_dict=False		Whether it should return a dictionary or a string.
-		- format=12			12/24 hour time format
+    def natural_time(self, time: datetime.time, as_string=True, format=12):
+        """
+        datetime object to a human readable time
 
-		return				string or dictionary according to as_dict kwarg
-		"""
-		valids = [12, 24]
+        Parameters
+        - time				a datetime.time object
+        - as_dict=False		Whether it should return a dictionary or a string.
+        - format=12			12/24 hour time format
 
-		if format not in valids:
-			raise ValueError("for must be either 12 or 24")
+        return				string or dictionary according to as_dict kwarg
+        """
 
-		if not isinstance(time, datetime.time):
-			raise NotValidObject("time must be a object of 'datetime.time'")
+        valids = [12, 24]
 
-		hour = time.hour
-		minute = time.minute
-		locale = None
+        if format not in valids:
+            raise ValueError("format must be either 12 or 24")
 
-		if format == 12:
-			if hour >12:
-				hour = hour-12
-				locale = "PM"
-			else:
-				hour = hour
-				locale = "AM"
+        if not isinstance(time, datetime.time):
+            raise ValueError("time must be a object of 'datetime.time'")
 
-			data = f"{hour}:{minute} {locale}"
+        hour = time.hour
+        minute = time.minute
+        locale = None
 
-		if format == 24:
-			data = f"{hour}:{minute}"
+        if format == 12:
+            if hour > 12:
+                hour = hour - 12
+                locale = "PM"
+            else:
+                hour = hour
+                locale = "AM"
 
-		if as_dict and format == 12:
-			return {'hour':hour, 'minute': minute, 'locale':locale}
+            data = f"{hour}:{minute} {locale}"
 
-		if as_dict and format == 24:
-			return {'hour':hour, 'minute': minute}
+        if format == 24:
+            data = f"{hour}:{minute}"
 
-		return data
+        time = BetterTime(hour, minute, format, locale, data)
 
-	def natural_datetime(self, date_time:datetime.datetime, as_dict=False):
-		"""
-		datetime object to a human readable time
+        if as_string:
+            return time.string
 
-		Parameters
-		- date_time			A datetime.datetime object
-		- as_dict=False		Whether it should return a dictionary or a string.
+        return time
 
-		return				string or dictionary according to as_dict kwarg
-		"""
-		if not isinstance(date_time, datetime.datetime):
-			raise ValueError('date_time must be a valid \'datetime.datetime\' object')
+    def natural_datetime(self, date_time: datetime.datetime, as_string=True):
+        """
+        datetime object to a human readable time
 
-		date = datetime.datetime.strftime(date_time, "%d")
+        Parameters
+        - date_time			A datetime.datetime object
+        - as_dict=False		Whether it should return a dictionary or a string.
 
-		day_short = datetime.datetime.strftime(date_time, "%a")
-		day_full = datetime.datetime.strftime(date_time, "%A")
+        return				string or dictionary according to as_dict kwarg
+        """
+        if not isinstance(date_time, datetime.datetime):
+            raise ValueError("date_time must be a valid 'datetime.datetime' object")
 
-		month_short = datetime.datetime.strftime(date_time, "%b")
-		month_full = datetime.datetime.strftime(date_time, "%B")
+        date = datetime.datetime.strftime(date_time, "%d")
 
-		year_short = datetime.datetime.strftime(date_time, "%y")
-		year_full = datetime.datetime.strftime(date_time, "%Y")
+        day_short = datetime.datetime.strftime(date_time, "%a")
+        day_full = datetime.datetime.strftime(date_time, "%A")
 
-		hour = datetime.datetime.strftime(date_time, "%I")
-		minute = datetime.datetime.strftime(date_time, "%m")
-		locale = datetime.datetime.strftime(date_time, "%p")
+        month_short = datetime.datetime.strftime(date_time, "%b")
+        month_full = datetime.datetime.strftime(date_time, "%B")
 
-		if as_dict:
-			return {'date': date, 'day_short': day_short, 'day_full': day_full, 'year_short': year_short, 'year_full': year_full, 'month_short': month_short, 'month_full': month_full, 'date': date, 'hour':hour, 'minute': minute, 'locale': locale}
+        year_short = datetime.datetime.strftime(date_time, "%y")
+        year_full = datetime.datetime.strftime(date_time, "%Y")
 
-		output = datetime.datetime.strftime(date_time, "%A, %d %b %Y at %I:%M %p")
+        hour = datetime.datetime.strftime(date_time, "%I")
+        minute = datetime.datetime.strftime(date_time, "%m")
+        locale = datetime.datetime.strftime(date_time, "%p")
 
-		return output
+        output = datetime.datetime.strftime(date_time, "%A, %d %b %Y at %I:%M %p")
 
+        datas = {
+                "date": date,
+                "day_short": day_short,
+                "day_full": day_full,
+                "year_short": year_short,
+                "year_full": year_full,
+                "month_short": month_short,
+                "month_full": month_full,
+                "hour": hour,
+                "minute": minute,
+                "locale": locale,
+                "datetime_string": output
+            }
 
+        better_datetime = BetterDatetime(**datas)
+
+        if as_string:
+            return better_datetime.string
+
+        return better_datetime

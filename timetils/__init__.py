@@ -9,3 +9,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 """
 
 from timetils.formatter import *
+
+__version__ = "1.1.0"
+__author__ = "shahriyardx"
