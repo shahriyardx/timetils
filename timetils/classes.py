@@ -109,8 +109,9 @@ class BetterTime:
 class BetterDatetime:
     """A better datetime class"""
 
-    def __init__(self, date, day_short, day_full, month_short, month_full, year_short, year_full, hour, minute, locale, datetime_string):
+    def __init__(self, date, month, day_short, day_full, month_short, month_full, year_short, year_full, hour, minute, locale, datetime_string):
         self.date = date
+        self.month = month
         self.day_short = day_short
         self.day_full = day_full
         self.month_short = month_short
@@ -128,9 +129,10 @@ class BetterDatetime:
 
     def __repr__(self):
         return (
-                "<BetterDatetime date=%r, day_short=%r, day_full=%r, month_short=%r, month_full=%r, year_short=%r, year_full=%r, hour=%r, minute=%r, locale=%r, string>"
+                "<BetterDatetime date=%r, month=%r, day_short=%r, day_full=%r, month_short=%r, month_full=%r, year_short=%r, year_full=%r, hour=%r, minute=%r, locale=%r, string>"
                 % (
                     self.date,
+                    self.month,
                     self.day_short,
                     self.day_full,
                     self.month_short,

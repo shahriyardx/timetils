@@ -21,7 +21,7 @@ data = formatter.natural_delta(delta, as_dict=False)
 # Output when as_dict = True -> {'years': 0, 'months': 1, 'days': 15, 'hours': 0, 'minutes': 4, 'seconds': 48}
 ```
 
-> For version 2.0.0
+> For version >= 2.0.0
 ```python
 import datetime
 import timetils

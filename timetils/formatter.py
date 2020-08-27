@@ -2,7 +2,7 @@ import datetime
 from timetils.utils import gets
 from timetils.classes import BetterDelta, BetterDate, BetterTime, BetterDatetime
 
-__version__ = "1.1.0"
+__version__ = "2.0.5"
 __author__ = "shahriyardx"
 
 
@@ -23,9 +23,9 @@ class Formatter:
 
         Parameters
         - delta			A time delta object
-        - as_dict=False	Whether it should return a dictionary or a string.
+        - as_string=False	Whether it should return a dictionary or a string.
 
-        return			String or dictionary according to as_dict kwarg
+        return			String or dictionary according to as_string kwarg
         """
 
         output = ""
@@ -64,9 +64,9 @@ class Formatter:
 
         Parameters
         - date				A datetime.date object
-        - as_dict=False		Whether it should return a dictionary or a string. Default False
+        - as_string=False		Whether it should return a dictionary or a string. Default False
 
-        return				string or dictionary according to as_dict kwarg
+        return				string or dictionary according to as_string kwarg
         """
         if not isinstance(date, datetime.date):
             raise ValueError("date must be a object of 'datetime.date'")
@@ -97,10 +97,10 @@ class Formatter:
 
         Parameters
         - time				a datetime.time object
-        - as_dict=False		Whether it should return a dictionary or a string.
+        - as_string=False		Whether it should return a dictionary or a string.
         - format=12			12/24 hour time format
 
-        return				string or dictionary according to as_dict kwarg
+        return				string or dictionary according to as_string kwarg
         """
 
         valids = [12, 24]
@@ -114,6 +114,7 @@ class Formatter:
         hour = time.hour
         minute = time.minute
         locale = None
+        data = ""
 
         if format == 12:
             if hour > 12:
@@ -141,14 +142,15 @@ class Formatter:
 
         Parameters
         - date_time			A datetime.datetime object
-        - as_dict=False		Whether it should return a dictionary or a string.
+        - as_string=False		Whether it should return a dictionary or a string.
 
-        return				string or dictionary according to as_dict kwarg
+        return				string or dictionary according to as_string kwarg
         """
         if not isinstance(date_time, datetime.datetime):
             raise ValueError("date_time must be a valid 'datetime.datetime' object")
 
         date = datetime.datetime.strftime(date_time, "%d")
+        month = datetime.datetime.strftime(date_time, "%m")
 
         day_short = datetime.datetime.strftime(date_time, "%a")
         day_full = datetime.datetime.strftime(date_time, "%A")
@@ -160,13 +162,14 @@ class Formatter:
         year_full = datetime.datetime.strftime(date_time, "%Y")
 
         hour = datetime.datetime.strftime(date_time, "%I")
-        minute = datetime.datetime.strftime(date_time, "%m")
+        minute = datetime.datetime.strftime(date_time, "%M")
         locale = datetime.datetime.strftime(date_time, "%p")
 
         output = datetime.datetime.strftime(date_time, "%A, %d %b %Y at %I:%M %p")
 
         datas = {
                 "date": date,
+                "month": month,
                 "day_short": day_short,
                 "day_full": day_full,
                 "year_short": year_short,

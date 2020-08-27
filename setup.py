@@ -23,7 +23,7 @@ classifiers = [
 
 setup(
     name="timetils",
-    version="2.0.0",
+    version="2.0.5",
     description="A easy to use time util library.",
     long_description=open("README.txt").read() + "\n\n" + open("CHANGELOG.txt").read(),
     url="https://github.com/shahprog/timetils/",
